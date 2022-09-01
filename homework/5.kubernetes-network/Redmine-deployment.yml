@@ -1,0 +1,32 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redmine
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redmine
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: redmine
+    spec:
+      containers:
+      - image: redmine:4.1.1
+        name: redmine
+        env:
+        - name: REDMINE_DB_POSTGRES
+          value: database
+        - name: REDMINE_DB_USERNAME
+          value: testuser
+        - name: REDMINE_DB_DATABASE
+          value: testdatabase
+        envFrom:
+        - secretRef:
+            name: redmine-secret
+        ports:
+        - containerPort: 3000
